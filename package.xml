@@ -10,6 +10,11 @@
   <depend>roscpp</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>libgstreamer1.0-dev</depend>
+  <depend>libgstreamer-plugins-base1.0-dev</depend>
+  <depend>libuvc-dev</depend>
+  <depend>boost</depend>
 
   <export></export>
 </package>
