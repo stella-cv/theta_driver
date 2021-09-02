@@ -1,8 +1,10 @@
 #include "theta_driver.hpp"
 
 namespace {
-gst_src gsrc;
+theta_driver::gst_src gsrc;
 }
+
+namespace theta_driver {
 
 gboolean gst_bus_callback(GstBus* bus, GstMessage* message, gpointer data) {
     GError* err;
@@ -222,12 +224,14 @@ void ThetaDriver::run() {
     uvc_exit(ctx_);
 }
 
+} // namespace theta_driver
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "theta_driver_node");
     if (!gst_is_initialized()) {
         gst_init(&argc, &argv);
     }
-    ThetaDriver driver;
+    theta_driver::ThetaDriver driver;
     bool ok = driver.init();
     if (!ok) {
         ROS_FATAL("Initialization failed");

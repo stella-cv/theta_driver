@@ -11,6 +11,8 @@
 #include "thetauvc.h"
 #include <opencv2/core.hpp>
 
+namespace theta_driver {
+
 class ThetaDriver {
 public:
     ThetaDriver();
@@ -41,5 +43,7 @@ struct gst_src {
     uint32_t dwFrameInterval;
     uint32_t dwClockFrequency;
 };
+
+} // namespace theta_driver
 
 #endif // THETA_DERIVER_HPP
