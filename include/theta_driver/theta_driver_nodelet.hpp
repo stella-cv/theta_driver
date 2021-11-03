@@ -1,8 +1,8 @@
-#ifndef THETA_DERIVER_HPP
-#define THETA_DERIVER_HPP
+#ifndef THETA_DERIVER_NODELET_HPP
+#define THETA_DERIVER_NODELET_HPP
 
-#include "theta_driver.hpp"
 #include <ros/ros.h>
+#include <nodelet/nodelet.h>
 #include <sensor_msgs/Image.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
@@ -13,14 +13,16 @@
 
 namespace theta_driver {
 
-class ThetaDriver {
+class ThetaDriverNodelet : public nodelet::Nodelet {
 public:
-    ThetaDriver();
+    ThetaDriverNodelet();
+    virtual ~ThetaDriverNodelet();
+    void onInit() override;
     bool init();
     bool open();
-    void run();
     void publishImage(GstMapInfo map);
 
+    bool streaming_ = false;
     uvc_device_handle_t* devh_;
     uvc_stream_ctrl_t ctrl_;
     uvc_context_t* ctx_;
@@ -46,4 +48,4 @@ struct gst_src {
 
 } // namespace theta_driver
 
-#endif // THETA_DERIVER_HPP
+#endif // THETA_DERIVER_NODELET_HPP

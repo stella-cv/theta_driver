@@ -1,0 +1,10 @@
+<library path="lib/libThetaDriverNodelet">
+  <class 
+    name="theta_driver/ThetaDriverNodelet" 
+    type="theta_driver::ThetaDriverNodelet" 
+    base_class_type="nodelet::Nodelet">
+    <description>
+      Nodelet for THETA.
+    </description>
+  </class>
+</library>
