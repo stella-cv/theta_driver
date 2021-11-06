@@ -178,7 +178,7 @@ bool ThetaDriverNodelet::init() {
         gst_init(0, 0);
     }
 
-    ros::NodeHandle private_nh("~");
+    ros::NodeHandle private_nh = getPrivateNodeHandle();
     image_pub_ = private_nh.advertise<sensor_msgs::Image>("image_raw", 1);
 
     private_nh.param<bool>("use4k", use4k_, false);
