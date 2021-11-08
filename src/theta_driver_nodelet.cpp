@@ -113,9 +113,28 @@ ThetaDriverNodelet::~ThetaDriverNodelet() {
 }
 
 void ThetaDriverNodelet::onInit() {
-    bool ok = init();
-    if (!ok) {
-        ROS_FATAL("Initialization failed");
+    ros::NodeHandle private_nh = getPrivateNodeHandle();
+    image_pub_ = private_nh.advertise<sensor_msgs::Image>("image_raw", 1);
+
+    private_nh.param<bool>("use4k", use4k_, false);
+    private_nh.param<std::string>("serial", serial_, "");
+    private_nh.param<std::string>("camera_frame", camera_frame_, camera_frame_);
+    pipeline_ =
+        "appsrc name=ap ! queue ! h264parse ! queue ! "
+        "decodebin ! queue ! videoconvert n_threads=8 ! queue ! video/x-raw,format=RGB ! appsink name=appsink emit-signals=true";
+    private_nh.param<std::string>("pipeline", pipeline_, pipeline_);
+
+    ros::Rate rate(1);
+    while (ros::ok()) {
+        bool ok = init();
+        if (ok) {
+            break;
+        }
+        else {
+            ROS_ERROR("Initialization failed");
+        }
+        rate.sleep();
+        ROS_WARN("retry");
     }
 }
 
@@ -177,17 +196,6 @@ bool ThetaDriverNodelet::init() {
     if (!gst_is_initialized()) {
         gst_init(0, 0);
     }
-
-    ros::NodeHandle private_nh = getPrivateNodeHandle();
-    image_pub_ = private_nh.advertise<sensor_msgs::Image>("image_raw", 1);
-
-    private_nh.param<bool>("use4k", use4k_, false);
-    private_nh.param<std::string>("serial", serial_, "");
-    private_nh.param<std::string>("camera_frame", camera_frame_, camera_frame_);
-    pipeline_ =
-        "appsrc name=ap ! queue ! h264parse ! queue ! "
-        "decodebin ! queue ! videoconvert n_threads=8 ! queue ! video/x-raw,format=RGB ! appsink name=appsink emit-signals=true";
-    private_nh.param<std::string>("pipeline", pipeline_, pipeline_);
 
     GError* error = NULL;
     gsrc.framecount = 0;
