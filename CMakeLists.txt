@@ -37,6 +37,13 @@ include_directories(
   ${GSTREAMER_1_0_INCLUDE_DIRS}
 )
 
+message("GSTREAMER_1_0_INCLUDE_DIRS:" ${GSTREAMER_1_0_INCLUDE_DIRS})
+message("GSTREAMER_1_0_LIBRARIES:" ${GSTREAMER_1_0_LIBRARIES})
+message("GSTREAMER_1_0_APP_LIBRARIES:" ${GSTREAMER_1_0_APP_LIBRARIES})
+message("OpenCV_LIBS:" ${OpenCV_LIBS})
+message("OpenCV_INCLUDE_DIRS:" ${OpenCV_INCLUDE_DIRS})
+message("====")
+
 set(dependencies
   rclcpp
   std_msgs
@@ -50,19 +57,18 @@ set(node_plugins "")
 # Add library and dependencies
 add_library(theta_driver_lib SHARED src/theta_driver_lib.cpp)
 rclcpp_components_register_nodes(theta_driver_lib "theta_driver::ThetaDriver")
-set(node_plugins "${node_plugins}theta_driver::ThetaDriver;$<TARGET_FILE:theta_driver_lib>\n")
 ament_target_dependencies(theta_driver_lib
   ${dependencies}
+  # ${OpenCV_LIBS}
+  # LibUVC::UVCShared
   # ${Boost_LIBRARIES}
   # ${GSTREAMER_1_0_LIBRARIES}
   # ${GSTREAMER_1_0_APP_LIBRARIES}
-  # LibUVC::UVCShared
-  # ${OpenCV_LIBS}
 )
 
 # Add executable and dependencies
 add_executable(theta_driver_node 
-  src/theta_driver_node.cpp 
+  src/theta_driver_node.cpp
   3rd/libuvc-theta-sample/gst/thetauvc.c)
 target_link_libraries(theta_driver_node theta_driver_lib)
 ament_target_dependencies(theta_driver_node ${dependencies})
