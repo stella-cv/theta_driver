@@ -37,13 +37,6 @@ include_directories(
   ${GSTREAMER_1_0_INCLUDE_DIRS}
 )
 
-message("GSTREAMER_1_0_INCLUDE_DIRS:" ${GSTREAMER_1_0_INCLUDE_DIRS})
-message("GSTREAMER_1_0_LIBRARIES:" ${GSTREAMER_1_0_LIBRARIES})
-message("GSTREAMER_1_0_APP_LIBRARIES:" ${GSTREAMER_1_0_APP_LIBRARIES})
-message("OpenCV_LIBS:" ${OpenCV_LIBS})
-message("OpenCV_INCLUDE_DIRS:" ${OpenCV_INCLUDE_DIRS})
-message("====")
-
 set(dependencies
   rclcpp
   std_msgs
@@ -59,11 +52,11 @@ add_library(theta_driver_lib SHARED src/theta_driver_lib.cpp)
 rclcpp_components_register_nodes(theta_driver_lib "theta_driver::ThetaDriver")
 ament_target_dependencies(theta_driver_lib
   ${dependencies}
-  # ${OpenCV_LIBS}
-  # LibUVC::UVCShared
-  # ${Boost_LIBRARIES}
-  # ${GSTREAMER_1_0_LIBRARIES}
-  # ${GSTREAMER_1_0_APP_LIBRARIES}
+  OpenCV
+  GSTREAMER_1_0
+  GSTREAMER_1_0_APP
+  libuvc
+  Boost
 )
 
 # Add executable and dependencies
@@ -84,8 +77,8 @@ install(TARGETS
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
-)
-
+  )
+  
 # Install exec
 install(TARGETS
   theta_driver_node
@@ -100,6 +93,7 @@ ament_export_include_directories(
   include
 )
 
+    
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
