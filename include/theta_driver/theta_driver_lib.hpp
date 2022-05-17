@@ -1,23 +1,22 @@
-#ifndef THETA_DERIVER_NODELET_HPP
-#define THETA_DERIVER_NODELET_HPP
+#ifndef THETA_DERIVER_LIB_HPP
+#define THETA_DERIVER_LIB_HPP
 
-#include <ros/ros.h>
-#include <nodelet/nodelet.h>
-#include <sensor_msgs/Image.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/image.hpp>
 #include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
 #include <gst/app/gstappsink.h>
 #include <libuvc/libuvc.h>
-#include "thetauvc.h"
 #include <opencv2/core.hpp>
+#include "thetauvc.h"
 
 namespace theta_driver {
 
-class ThetaDriverNodelet : public nodelet::Nodelet {
+class ThetaDriver : public rclcpp::Node {
 public:
-    ThetaDriverNodelet();
-    virtual ~ThetaDriverNodelet();
-    void onInit() override;
+    ThetaDriver(const rclcpp::NodeOptions & options);
+    virtual ~ThetaDriver();
+    void onInit();
     bool init();
     bool open();
     void publishImage(GstMapInfo map);
@@ -30,7 +29,7 @@ public:
     std::string serial_ = "";
     std::string camera_frame_ = "camera_link";
     std::string pipeline_;
-    ros::Publisher image_pub_;
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_pub_;
 };
 
 struct gst_src {
@@ -48,4 +47,4 @@ struct gst_src {
 
 } // namespace theta_driver
 
-#endif // THETA_DERIVER_NODELET_HPP
+#endif // THETA_DERIVER_LIB_HPP
