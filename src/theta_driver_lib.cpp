@@ -98,7 +98,8 @@ void ThetaDriver::publishImage(GstMapInfo map) {
 }
 
 ThetaDriver::ThetaDriver(const rclcpp::NodeOptions & options): Node("theta_driver", options){
-
+    RCLCPP_INFO(get_logger(),"Initializing");
+    onInit();
 }
 
 ThetaDriver::~ThetaDriver() {

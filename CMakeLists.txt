@@ -29,6 +29,7 @@ find_package(libuvc REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(GSTREAMER_1_0 gstreamer-1.0)
 pkg_check_modules(GSTREAMER_1_0_APP gstreamer-app-1.0)
+pkg_check_modules(LibUVC libuvc)
 
 include_directories(
   include
@@ -55,7 +56,7 @@ ament_target_dependencies(theta_driver_lib
   OpenCV
   GSTREAMER_1_0
   GSTREAMER_1_0_APP
-  libuvc
+  LibUVC
   Boost
 )
 
