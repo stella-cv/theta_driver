@@ -2,27 +2,27 @@
 
 ## Getting started
 
-### ROS1
+### with docker
 
 ```bash
 docker build -t theta_driver .
 docker run --rm -it --net=host --privileged theta_driver
-roscore&
-rosrun theta_driver theta_driver_node
+ros2 run theta_driver theta_driver_node
 ```
 
-### ROS2-Foxy
+### without docker
 
 You need to install the libuvc and it's dependencies before using this package.
 
-1. https://github.com/ricohapi/libuvc-theta
+1. <https://github.com/ricohapi/libuvc-theta>
 
 You will also need the sample for the Theta-Z1
 
-2. https://github.com/ricohapi/libuvc-theta-sample
+2. <https://github.com/ricohapi/libuvc-theta-sample>
 
 To install the package:
-```
+
+```bash
 source /opt/ros/foxy/setup.bash
 mkdir -p theta_driver_ws/src
 cd theta_driver_ws
@@ -32,18 +32,10 @@ colcon build
 ```
 
 Try it with:
-```
+
+```bash
 source install/setup.bash
 ros2 run theta_driver theta_driver_node 
 ```
 
 And then you can use image_view package, rqt or rviz2 to see the published image.
-
-
-
-
-
-## Status
-[18/05/2022] Works in Ubuntu20.04-ROS2-Foxy with local installation.Docker under development
-
-[17/05/2022] Under development
