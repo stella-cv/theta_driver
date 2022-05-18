@@ -1,13 +1,20 @@
-#include "theta_driver/theta_driver_nodelet.hpp"
-#include <nodelet/loader.h>
+#include "theta_driver/theta_driver_lib.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "theta_driver_node");
-    nodelet::Loader nodelet;
-    nodelet::M_string remap(ros::names::getRemappings());
-    nodelet::V_string nargv;
-    std::string nodelet_name = ros::this_node::getName();
-    nodelet.load(nodelet_name, "theta_driver/ThetaDriverNodelet", remap, nargv);
-    ros::spin();
+    // Init rclcpp
+    rclcpp::init(argc, argv);
+    // Create executor
+    rclcpp::executors::SingleThreadedExecutor exec;
+    // Create empty options
+    rclcpp::NodeOptions options;
+    // Create the theta_driver
+    auto theta_driver = std::make_shared<theta_driver::ThetaDriver>(options);
+    // Add the node to the executor
+    exec.add_node(theta_driver);
+    // Spin the node
+    exec.spin();
+    // Shutdown rclcpp
+    rclcpp::shutdown();
     return 0;
 }
