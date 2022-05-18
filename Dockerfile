@@ -1,4 +1,4 @@
-FROM ros:noetic
+FROM ros:foxy
 ENV DEBIAN_FRONTEND noninteractive
 
 # install dependencies via apt
@@ -15,7 +15,8 @@ RUN set -x && \
     wget \
     curl \
     tar \
-    unzip && \
+    unzip \
+    libboost-all-dev && \
   : "gstreamer dependencies" && \
   apt-get install -y -qq \
     libgstreamer1.0-0 \
@@ -81,15 +82,16 @@ RUN set -x && \
   apt-get autoremove -y -qq && \
   rm -rf /var/lib/apt/lists/*
 
-WORKDIR /catkin_ws
-COPY . /catkin_ws/src/theta_driver
+WORKDIR /ros2_ws
+COPY . /ros2_ws/src/theta_driver
 
 RUN set -x && \
   : "build ROS packages" && \
   bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; \
-  catkin_make -j${NUM_THREADS}"
+  colcon build --parallel-workers ${NUM_THREADS}"
 
 RUN set -x && \
-  sh -c "echo 'source /opt/ros/${ROS_DISTRO}/setup.bash\nsource /catkin_ws/devel/setup.bash' >> ~/.bashrc"
+  sh -c "echo 'source /opt/ros/${ROS_DISTRO}/setup.bash \
+  \nsource /ros2_ws/install/setup.bash' >> ~/.bashrc"
 
 CMD ["bash"]
