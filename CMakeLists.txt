@@ -54,10 +54,12 @@ rclcpp_components_register_nodes(theta_driver_lib "theta_driver::ThetaDriver")
 ament_target_dependencies(theta_driver_lib
   ${dependencies}
   OpenCV
-  GSTREAMER_1_0
-  GSTREAMER_1_0_APP
-  LibUVC
   Boost
+)
+target_link_libraries(theta_driver_lib
+  ${GSTREAMER_1_0_LIBRARIES}
+  ${GSTREAMER_1_0_APP_LIBRARIES}
+  LibUVC::UVCShared
 )
 
 # Add executable and dependencies
