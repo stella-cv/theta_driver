@@ -5,6 +5,8 @@
 ### with docker
 
 ```bash
+git clone --recursive git@github.com:stella-cv/theta_driver.git
+cd theta_driver
 docker build -t theta_driver .
 docker run --rm -it --net=host --privileged theta_driver
 ros2 run theta_driver theta_driver_node

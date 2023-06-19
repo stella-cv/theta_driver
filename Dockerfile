@@ -1,4 +1,4 @@
-FROM ros:foxy
+FROM ros:humble
 ENV DEBIAN_FRONTEND noninteractive
 
 # install dependencies via apt
@@ -25,7 +25,6 @@ RUN set -x && \
     gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
-    gstreamer1.0-doc \
     gstreamer1.0-tools \
     gstreamer1.0-x \
     gstreamer1.0-alsa \
@@ -70,7 +69,7 @@ RUN set -x && \
   : "ci dependencies" && \
   apt-get install -y -qq \
     ccache \
-    clang-format-6.0 && \
+    clang-format && \
   apt-get autoremove -y -qq && \
   rm -rf /var/lib/apt/lists/*
 
