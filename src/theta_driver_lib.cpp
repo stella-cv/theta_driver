@@ -97,8 +97,9 @@ void ThetaDriver::publishImage(GstMapInfo map) {
     image_pub_->publish(image);
 }
 
-ThetaDriver::ThetaDriver(const rclcpp::NodeOptions & options): Node("theta_driver", options){
-    RCLCPP_INFO(get_logger(),"Initializing");
+ThetaDriver::ThetaDriver(const rclcpp::NodeOptions& options)
+    : Node("theta_driver", options) {
+    RCLCPP_INFO(get_logger(), "Initializing");
     onInit();
 }
 
@@ -113,19 +114,19 @@ ThetaDriver::~ThetaDriver() {
 }
 
 void ThetaDriver::onInit() {
-    image_pub_ = this->create_publisher<sensor_msgs::msg::Image>("image_raw", 10);
+    image_pub_ = this->create_publisher<sensor_msgs::msg::Image>("image_raw", 1);
 
-    declare_parameter<bool>("use4k",false);
-    get_parameter("use4k",use4k_);
-    declare_parameter<std::string>("serial","");
-    get_parameter("serial",serial_);
+    declare_parameter<bool>("use4k", false);
+    get_parameter("use4k", use4k_);
+    declare_parameter<std::string>("serial", "");
+    get_parameter("serial", serial_);
     declare_parameter<std::string>("camera_frame", camera_frame_);
-    get_parameter("camera_frame",camera_frame_);
+    get_parameter("camera_frame", camera_frame_);
     pipeline_ =
         "appsrc name=ap ! queue ! h264parse ! queue ! "
         "decodebin ! queue ! videoconvert n_threads=8 ! queue ! video/x-raw,format=RGB ! appsink name=appsink emit-signals=true";
     declare_parameter<std::string>("pipeline", pipeline_);
-    get_parameter("pipeline",pipeline_);
+    get_parameter("pipeline", pipeline_);
 
     rclcpp::Rate rate(1);
     while (rclcpp::ok()) {
@@ -134,10 +135,10 @@ void ThetaDriver::onInit() {
             break;
         }
         else {
-            RCLCPP_ERROR(get_logger(),"Initialization failed");
+            RCLCPP_ERROR(get_logger(), "Initialization failed");
         }
         rate.sleep();
-        RCLCPP_WARN(get_logger(),"retry");
+        RCLCPP_WARN(get_logger(), "retry");
     }
 }
 
@@ -147,7 +148,7 @@ bool ThetaDriver::open() {
 
     res = uvc_init(&ctx_, NULL);
     if (res != UVC_SUCCESS) {
-        RCLCPP_ERROR_STREAM(get_logger(),"uvc_init failed");
+        RCLCPP_ERROR_STREAM(get_logger(), "uvc_init failed");
         return false;
     }
 
@@ -163,12 +164,12 @@ bool ThetaDriver::open() {
         uvc_device_descriptor_t* desc;
 
         if (uvc_get_device_descriptor(devlist[idx], &desc) == UVC_SUCCESS) {
-            RCLCPP_INFO_STREAM(get_logger(),"index: " << idx);
+            RCLCPP_INFO_STREAM(get_logger(), "index: " << idx);
             if (desc->product) {
-                RCLCPP_INFO_STREAM(get_logger(),"product: " << desc->product);
+                RCLCPP_INFO_STREAM(get_logger(), "product: " << desc->product);
             }
             if (desc->serialNumber) {
-                RCLCPP_INFO_STREAM(get_logger(),"serial: " << desc->serialNumber);
+                RCLCPP_INFO_STREAM(get_logger(), "serial: " << desc->serialNumber);
             }
             if (serial_.empty() || serial_ == std::string(desc->serialNumber)) {
                 uvc_device_t* dev;
@@ -206,7 +207,7 @@ bool ThetaDriver::init() {
     gsrc.timer = g_timer_new();
     gsrc.pipeline = gst_parse_launch(pipeline_.c_str(), &error);
     if (gsrc.pipeline == NULL) {
-        RCLCPP_FATAL_STREAM(get_logger(),error->message);
+        RCLCPP_FATAL_STREAM(get_logger(), error->message);
         g_error_free(error);
         return false;
     }
@@ -232,21 +233,21 @@ bool ThetaDriver::init() {
 
     bool ok = open();
     if (!ok) {
-        RCLCPP_FATAL(get_logger(),"Device open error");
+        RCLCPP_FATAL(get_logger(), "Device open error");
         return false;
     }
 
     gsrc.dwFrameInterval = ctrl_.dwFrameInterval;
     gsrc.dwClockFrequency = ctrl_.dwClockFrequency;
     if (gst_element_set_state(gsrc.pipeline, GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE) {
-        RCLCPP_FATAL(get_logger(),"Could not start streaming");
+        RCLCPP_FATAL(get_logger(), "Could not start streaming");
         return false;
     }
 
-    RCLCPP_INFO_STREAM(get_logger(),"Start streaming");
+    RCLCPP_INFO_STREAM(get_logger(), "Start streaming");
     uvc_error_t res = uvc_start_streaming(devh_, &ctrl_, uvc_streaming_callback, &gsrc, 0);
     if (res != UVC_SUCCESS) {
-        RCLCPP_ERROR(get_logger(),"uvc_start_streaming: failed");
+        RCLCPP_ERROR(get_logger(), "uvc_start_streaming: failed");
     }
     else {
         streaming_ = true;
@@ -255,7 +256,6 @@ bool ThetaDriver::init() {
 }
 
 } // namespace theta_driver
-
 
 // #include "rclcpp_components/register_node_macro.hpp"
 // // Register the component with class_loader.
