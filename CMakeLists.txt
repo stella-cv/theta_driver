@@ -46,11 +46,11 @@ set(dependencies
   rclcpp_components
 )
 
-set(node_plugins "")
-
 # Add library and dependencies
-add_library(theta_driver_lib SHARED src/theta_driver_lib.cpp)
-rclcpp_components_register_nodes(theta_driver_lib "theta_driver::ThetaDriver")
+add_library(theta_driver_lib SHARED
+  src/theta_driver_lib.cpp 
+  3rd/libuvc-theta-sample/gst/thetauvc.c)
+rclcpp_components_register_node(theta_driver_lib PLUGIN "theta_driver::ThetaDriver" EXECUTABLE theta_driver_node)
 ament_target_dependencies(theta_driver_lib
   ${dependencies}
   OpenCV
@@ -61,13 +61,6 @@ target_link_libraries(theta_driver_lib
   ${GSTREAMER_1_0_APP_LIBRARIES}
   LibUVC::UVCShared
 )
-
-# Add executable and dependencies
-add_executable(theta_driver_node 
-  src/theta_driver_node.cpp
-  3rd/libuvc-theta-sample/gst/thetauvc.c)
-target_link_libraries(theta_driver_node theta_driver_lib)
-ament_target_dependencies(theta_driver_node ${dependencies})
 
 if(NOT WIN32)
   ament_environment_hooks(
