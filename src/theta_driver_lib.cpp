@@ -77,24 +77,24 @@ void ThetaDriver::publishImage(GstMapInfo map) {
     dataLength = map.size;
     rdata = map.data;
 
-    sensor_msgs::msg::Image image;
-    image.header.stamp = this->get_clock()->now();
-    image.header.frame_id = camera_frame_;
+    auto image = std::make_unique<sensor_msgs::msg::Image>();
+    image->header.stamp = this->get_clock()->now();
+    image->header.frame_id = camera_frame_;
     if (use4k_) {
-        image.width = 3840;
-        image.height = 1920;
+        image->width = 3840;
+        image->height = 1920;
     }
     else {
-        image.width = 1920;
-        image.height = 960;
+        image->width = 1920;
+        image->height = 960;
     }
-    image.encoding = "rgb8";
-    image.is_bigendian = false;
-    image.step = image.width * 3;
+    image->encoding = "rgb8";
+    image->is_bigendian = false;
+    image->step = image->width * 3;
 
     std::vector<unsigned char> values(rdata, (unsigned char*)rdata + dataLength);
-    image.data = values;
-    image_pub_->publish(image);
+    image->data = values;
+    image_pub_->publish(std::move(image));
 }
 
 ThetaDriver::ThetaDriver(const rclcpp::NodeOptions& options)
